@@ -3,49 +3,57 @@ import ReactDOM from "react-dom"
 import "./index.css"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
+import { useEffect } from "react"
 
-class CustomTextInput extends React.Component {
-  constructor(props) {
-    super(props)
-    this.inputRef = React.createRef()
-  }
-  focusTextInput = () => {
-    this.inputRef.current.focus()
-  }
-  printTextValue = () => {
-    console.log(this.inputRef.current.value)
-  }
-  render() {
-    return <input type="text" ref={this.inputRef} />
-  }
+function Example(){
+  const [name, setName] = useState('')
+  const [age,setAge] = useState('')
+
+  const [nameValue, setNameValue] = useState('')
+  const [ageValue, setAgeValue] = useState('')
+
+useEffect(()=>{
+  setNameValue(name)
+  setAgeValue(age)
+})
+
+  return(
+    <div>
+      <input placeholder="name" onInput={(e)=>setName(e.target.value)}/>
+      <input placeholder="age" onInput={(e)=>setAge(e.target.value)} />
+      <div>{name}</div>
+      <div>{age}</div>
+    </div>
+  )
 }
 
-class AutoFocusText extends React.Component {
-  constructor(props) {
-    super(props)
-    this.textRef = React.createRef()
-    this.printText = this.printText.bind(this)
-  }
+// class Example extends React.Component{
+//   constructor(props){
+//     super(props)
+//     this.state = {
+//       count: 0
+//     }
+//   }
 
-  componentDidMount() {
-    console.log(this.textRef.current.state)
-    this.textRef.current.focusTextInput()
-  }
+//   componentDidMount(){
+//     document.title = `You clicked ${this.state.count} times`
+//   }
 
-  printText() {
-    this.textRef.current.printTextValue()
-  }
+//   componentDidUpdate(){
+//     document.title = `You clicked ${this.state.count} times`
+//   }
 
-  render() {
-    return (
-      <div>
-        <CustomTextInput ref={this.textRef} />
-        <button onClick={this.printText}>click </button>
-      </div>
-    )
-  }
-}
-ReactDOM.render(<AutoFocusText />, document.getElementById("root"))
+//   render(){
+//     return(
+//       <div>
+//          <div>You clicked {this.state.count} times</div>
+//        <button onClick={()=>this.setState({count: this.state.count+1})}>click</button>
+//       </div>
+//     )
+//   }
+// }
+
+ReactDOM.render(<Example />, document.getElementById("root"))
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
