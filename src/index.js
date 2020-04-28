@@ -1,172 +1,51 @@
-import React, { useState } from "react"
+import React, { useState, createRef } from "react"
 import ReactDOM from "react-dom"
 import "./index.css"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
 
-const PRODUCTS = [
-  {
-    category: "Sporting Goods",
-    price: "$49.99",
-    stocked: true,
-    name: "Football",
-  },
-  {
-    category: "Sporting Goods",
-    price: "$9.99",
-    stocked: true,
-    name: "Baseball",
-  },
-  {
-    category: "Sporting Goods",
-    price: "$29.99",
-    stocked: false,
-    name: "Basketball",
-  },
-  {
-    category: "Electronics",
-    price: "$99.99",
-    stocked: true,
-    name: "iPod Touch",
-  },
-  {
-    category: "Electronics",
-    price: "$399.99",
-    stocked: false,
-    name: "iPhone 5",
-  },
-  { category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7" },
-]
-
-class SearchBar extends React.Component {
+class CustomTextInput extends React.Component {
   constructor(props) {
     super(props)
-    this.setFilterData = this.setFilterData.bind(this)
-    this.setStockData = this.setStockData.bind(this)
+    this.inputRef = React.createRef()
   }
-
-  setFilterData(e) {
-    console.log(e.target.value)
-    this.props.setFilterText(e.target.value)
+  focusTextInput = () => {
+    this.inputRef.current.focus()
   }
-
-  setStockData(e) {
-    this.props.setStockedValue(e.target.checked)
+  printTextValue = () => {
+    console.log(this.inputRef.current.value)
   }
-
   render() {
-    return (
-      <form>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={this.props.filterText}
-          onInput={this.setFilterData}
-        />
-        <p>
-          <input
-            type="checkbox"
-            checked={this.props.inStockOnly}
-            onInput={this.setStockData}
-          />{" "}
-          Only show products in stock
-        </p>
-      </form>
-    )
+    return <input type="text" ref={this.inputRef} />
   }
 }
 
-class Product extends React.Component {
-  render() {
-    return (
-      <div>
-        <div>
-          {this.props.category} {this.props.name} {this.props.price}
-        </div>
-      </div>
-    )
-  }
-}
-
-class ProductTable extends React.Component {
+class AutoFocusText extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
-  }
-  render() {
-    const rows = []
-    const products = this.props.products
-
-    products.forEach((product) => {
-      if (this.props.isStocked) {
-        if (!product.stocked) return
-      }
-      if (this.props.filterText.length > 0) {
-        if (
-          product.name
-            .toLowerCase()
-            .indexOf(this.props.filterText.toLowerCase()) === -1
-        )
-          return
-      }
-      rows.push(
-        <Product
-          name={product.name}
-          price={product.price}
-          category={product.category}
-        />
-      )
-    })
-    return (
-      <div>
-        <div>Category Name Price</div>
-        <div>{rows}</div>
-      </div>
-    )
-  }
-}
-
-class FilterableProductTable extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      filterText: "",
-      isStocked: false,
-    }
-    this.setFilterText = this.setFilterText.bind(this)
-    this.setStockedValue = this.setStockedValue.bind(this)
+    this.textRef = React.createRef()
+    this.printText = this.printText.bind(this)
   }
 
-  setFilterText(text) {
-    this.setState({ filterText: text })
+  componentDidMount() {
+    console.log(this.textRef.current.state)
+    this.textRef.current.focusTextInput()
   }
 
-  setStockedValue(value) {
-    this.setState({ isStocked: value })
+  printText() {
+    this.textRef.current.printTextValue()
   }
 
   render() {
     return (
       <div>
-        <SearchBar
-          filterText={this.state.filterText}
-          isStocked={this.state.isStocked}
-          setFilterText={this.setFilterText}
-          setStockedValue={this.setStockedValue}
-        />
-        <ProductTable
-          filterText={this.state.filterText}
-          isStocked={this.state.isStocked}
-          products={this.props.products}
-        />
+        <CustomTextInput ref={this.textRef} />
+        <button onClick={this.printText}>click </button>
       </div>
     )
   }
 }
-ReactDOM.render(
-  <FilterableProductTable products={PRODUCTS} />,
-  document.getElementById("root")
-)
+ReactDOM.render(<AutoFocusText />, document.getElementById("root"))
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
