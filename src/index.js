@@ -3,55 +3,57 @@ import ReactDOM from "react-dom"
 import "./index.css"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
-import { useEffect } from "react"
+import { useEffect, createContext } from "react"
+import { useContext } from "react"
+
+const themes = {
+  light: {
+    foreground: "#000000",
+    background: "#eeeeee"
+  },
+  dark: {
+    foreground: "#ffffff",
+    background: "#222222"
+  }
+};
+
+const ThemeContext = React.createContext(themes.light)
 
 function Example(){
-  const [name, setName] = useState('')
-  const [age,setAge] = useState('')
-
-  const [nameValue, setNameValue] = useState('')
-  const [ageValue, setAgeValue] = useState('')
-
-useEffect(()=>{
-  setNameValue(name)
-  setAgeValue(age)
-})
-
   return(
-    <div>
-      <input placeholder="name" onInput={(e)=>setName(e.target.value)}/>
-      <input placeholder="age" onInput={(e)=>setAge(e.target.value)} />
-      <div>{name}</div>
-      <div>{age}</div>
-    </div>
+    <ThemeContext.Provider value={themes.dark}>
+      <Toolbar />
+    </ThemeContext.Provider>
   )
 }
 
-// class Example extends React.Component{
-//   constructor(props){
-//     super(props)
-//     this.state = {
-//       count: 0
-//     }
-//   }
+function Toolbar(props){
+  return(
+    <div>
+      <ThemedButton />
+          </div>
+  )
+}
 
-//   componentDidMount(){
-//     document.title = `You clicked ${this.state.count} times`
-//   }
+function ThemedButton(){
+  const theme = useContext(ThemeContext)
+  return(
+    <button style={{background:theme.background, color: theme.foreground}}>
+      I am styled by theme context!
+      <Sample />
+    </button>
+  )
+}
 
-//   componentDidUpdate(){
-//     document.title = `You clicked ${this.state.count} times`
-//   }
-
-//   render(){
-//     return(
-//       <div>
-//          <div>You clicked {this.state.count} times</div>
-//        <button onClick={()=>this.setState({count: this.state.count+1})}>click</button>
-//       </div>
-//     )
-//   }
-// }
+function Sample(){
+  const theme = useContext(ThemeContext)
+  return(
+    <div>
+      <div>{theme.foreground}</div>
+      <div>{theme.background}</div>
+    </div>
+  )
+}
 
 ReactDOM.render(<Example />, document.getElementById("root"))
 // If you want your app to work offline and load faster, you can change
